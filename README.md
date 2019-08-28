@@ -12,5 +12,5 @@ qs_papers中包含如何使用本库的一些教程
 
 
 
-#感谢以下资料提供的帮助
+# 感谢以下资料提供的帮助
 abupy(https://github.com/bbfamily/abu) 
