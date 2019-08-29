@@ -1,9 +1,11 @@
+# -*- encoding:utf-8 -*-
+
 import os
 import pandas as pd
 from ..CoreQs import QsEnv
 
-class QsDataMarket(object):
-    """操作数字货币价格数据的类"""
+class QsData(object):
+    """获取数字货币价格数据的类"""
 
     def __init__(self):
         self.cachedir = QsEnv.g_project_cache_dir

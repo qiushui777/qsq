@@ -1,9 +1,11 @@
 from __future__ import absolute_import
 
 from . import QsStat
-from .QsDataMarket import QsDataMarket
+from .QsData import QsData
+from .QsCrypto import QsCrypto
 
 __all__ = [
     'QsStat',
-    'QsDataMarket'
+    'QsData',
+    'QsCrypto'
 ]

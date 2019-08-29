@@ -1,8 +1,20 @@
+from qsq import QsData, QsCrypto
+
+data = QsData()
+bitcoin_df = data.get_coin_df(coin='bitcoin')
+
+bitcoin = QsCrypto(bitcoin_df)
+
+
+
+
+
+"""
 import matplotlib as mpl
 
-from qsq import QsDataMarket, QsDrawUtil, QsStat
+from qsq import QsData, QsDrawUtil, QsStat
 
-qsmarket = QsDataMarket()
+qsmarket = QsData()
 bitcoin = qsmarket.get_coin_df(coin='bitcoin')
 ethereum = qsmarket.get_coin_df(coin='ethereum')
 litecoin = qsmarket.get_coin_df(coin='litecoin')
@@ -11,7 +23,6 @@ bitcoin_cash = qsmarket.get_coin_df(coin='bitcoin-cash')
 mpl.rcParams['figure.figsize'] = (15,10)
 #QsDrawUtil.plot_multi_df({'bitcoin':bitcoin,'ethereum':ethereum,'litecoin':litecoin,'ripple':ripple,
                                 #'bitcoin_cash':bitcoin_cash})
-
 bitcoin_2y = bitcoin[-730:]
 ethereum_2y = ethereum[-730:]
 litecoin_2y = litecoin[-730:]
@@ -24,21 +35,14 @@ data_week_wave = QsStat.date_week_wave(({'bitcoin':bitcoin,'bitcoin_2y':bitcoin_
 
 print(data_week_wave)
 
-"""
+
+
+
 from qsq import QsCoinMkScraper
 
 scraper = QsCoinMkScraper()
 #scraper.get_all_kline_data()
 scraper.refresh_all_kline_data()
 
-
-from abupy import QsDataMarket,ABuMarketDrawing
-
-qsmarket = QsDataMarket()
-bitcoin = qsmarket.get_coin_df(coin='bitcoin')
-ethereum = qsmarket.get_coin_df(coin='ethereum')
-litecoin = qsmarket.get_coin_df(coin='litecoin')
-#ABuMarketDrawing.plot_simple_two_stock({'btc': bitcoin, 'eth': ethereum})
-ABuMarketDrawing.plot_multi_df({'bitcoin':bitcoin,'ethereum':ethereum,'litecoin':litecoin})
 
 """
