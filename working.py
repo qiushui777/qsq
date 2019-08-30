@@ -1,9 +1,14 @@
-from qsq import QsData, QsCrypto
+from qsq import QsData, QsCrypto, QsAccount
 
 data = QsData()
-bitcoin_df = data.get_coin_df(coin='bitcoin')
+bitcoin = QsCrypto(data.get_coin_df(coin='bitcoin'))
+bitcoin.add_period_max(3)
+bitcoin.add_period_min(3)
 
-bitcoin = QsCrypto(bitcoin_df)
+myaccount = QsAccount()
+print(myaccount.order_df)
+
+
 
 
 

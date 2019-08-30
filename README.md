@@ -17,3 +17,6 @@ abupy(https://github.com/bbfamily/abu)
 # 欢迎交流
 邮箱：xudong_shao#hotmail.com
 qq群：742593185
+
+### License
+[GPL](./LICENSE)
