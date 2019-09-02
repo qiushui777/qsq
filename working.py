@@ -6,8 +6,9 @@ bitcoin.add_period_max(3)
 bitcoin.add_period_min(3)
 
 myaccount = QsAccount()
-print(myaccount.order_df)
-
+myaccount.Order(date="19-1",mode=1,symbol='bitcoin',price=1000,amount=100)
+myaccount.Order(date="19-2",mode=2,symbol='bitcoin',price=1200,amount=100)
+print(myaccount.order_df, myaccount.security_df, myaccount.balance)
 
 
 
