@@ -1,9 +1,13 @@
-from qsq import QsData, QsCrypto, QsAccount
+from qsq import QsData, QsCrypto, QsAccount, QsSignal
 
 data = QsData()
-bitcoin = QsCrypto(data.get_coin_df(coin='bitcoin'))
+bitcoin = QsCrypto('bitcoin', data.get_coin_df(coin='bitcoin'))
 bitcoin.add_period_max(3)
 bitcoin.add_period_min(3)
+
+signal = QsSignal(bitcoin)
+print(signal.crypto.symbol)
+
 
 myaccount = QsAccount()
 myaccount.Order(date="19-1",mode=1,symbol='bitcoin',price=1000,amount=100)

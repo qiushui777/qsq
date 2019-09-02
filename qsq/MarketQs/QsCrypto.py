@@ -4,7 +4,8 @@ import numpy as np
 
 class QsCrypto(object):
     """操作加密货币数据类"""
-    def __init__(self, df):
+    def __init__(self, symbol, df):
+        self.symbol = symbol
         self.crypto_df = df
 
     def add_period_max(self, period):
