@@ -10,6 +10,9 @@ class QsSignal(object):
 
     def produce_signal(self, param):
         """
-        使用输入的参数生成买卖信号
+        使用输入的参数生成买卖信号，返回一个字典，包含 
+        mode: 买卖方向
+        symbol: 买卖对象
+        percent: 买卖比例 
         """
-        return [1, self.crypto.symbol]
+        return {'mode':0, 'symbol':self.crypto.symbol,'percent':1}

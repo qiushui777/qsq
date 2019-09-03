@@ -5,8 +5,9 @@ from .CoreQs import *
 from .ScraperQs import *
 from .MarketQs import *
 from .UtilQs import *
+from .TacticsQs import *
 
-__all__ = ['CoreQs','ScraperQs','MarketQs','UtilQs']
+__all__ = ['CoreQs','ScraperQs','MarketQs','UtilQs','TacticsQs']
 
 __version__ = '1'
 __author__ = '秋水'

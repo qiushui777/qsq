@@ -1,58 +1,33 @@
-from qsq import QsData, QsCrypto, QsAccount, QsSignal
+import numpy as np
+from qsq import QsData, QsCrypto, QsAccount, QsSignal, QsTime
 
 data = QsData()
 bitcoin = QsCrypto('bitcoin', data.get_coin_df(coin='bitcoin'))
-bitcoin.add_period_max(3)
-bitcoin.add_period_min(3)
+bitcoin.add_period_max(12)
+bitcoin.add_period_min(15)
 
-signal = QsSignal(bitcoin)
-print(signal.crypto.symbol)
+
+class buysignal(QsSignal):
+    def produce_signal(self,param):
+        if self.crypto.crypto_df.loc[param]['12_period_max'] == np.NaN:
+            return {'mode':0, 'symbol':self.crypto.symbol,'percent':1}
+        if self.crypto.crypto_df.loc[param]['close'] > self.crypto.crypto_df.loc[param]['12_period_max']:
+            return {'mode':1, 'symbol':self.crypto.symbol,'percent':1}
+        else:
+            return {'mode':0, 'symbol':self.crypto.symbol,'percent':1}
+
+class sellsignal(QsSignal):
+    def produce_signal(self,param):
+        if self.crypto.crypto_df.loc[param]['15_period_min'] == np.NaN:
+            return {'mode':0, 'symbol':self.crypto.symbol,'percent':1}
+        if self.crypto.crypto_df.loc[param]['close'] < self.crypto.crypto_df.loc[param]['15_period_min']:
+            return {'mode':2, 'symbol':self.crypto.symbol,'percent':1}
+        else:
+            return {'mode':0, 'symbol':self.crypto.symbol,'percent':1}
+
+buy_sig = buysignal(bitcoin)
+sell_sig = sellsignal(bitcoin)
 
 
 myaccount = QsAccount()
-myaccount.Order(date="19-1",mode=1,symbol='bitcoin',price=1000,amount=100)
-myaccount.Order(date="19-2",mode=2,symbol='bitcoin',price=1200,amount=100)
-print(myaccount.order_df, myaccount.security_df, myaccount.balance)
-
-
-
-
-
-
-"""
-import matplotlib as mpl
-
-from qsq import QsData, QsDrawUtil, QsStat
-
-qsmarket = QsData()
-bitcoin = qsmarket.get_coin_df(coin='bitcoin')
-ethereum = qsmarket.get_coin_df(coin='ethereum')
-litecoin = qsmarket.get_coin_df(coin='litecoin')
-ripple = qsmarket.get_coin_df(coin='ripple')
-bitcoin_cash = qsmarket.get_coin_df(coin='bitcoin-cash')
-mpl.rcParams['figure.figsize'] = (15,10)
-#QsDrawUtil.plot_multi_df({'bitcoin':bitcoin,'ethereum':ethereum,'litecoin':litecoin,'ripple':ripple,
-                                #'bitcoin_cash':bitcoin_cash})
-bitcoin_2y = bitcoin[-730:]
-ethereum_2y = ethereum[-730:]
-litecoin_2y = litecoin[-730:]
-ripple_2y = ripple[-730:]
-bitcoin_cash_2y = bitcoin_cash[-730:]
-
-data_week_wave = QsStat.date_week_wave(({'bitcoin':bitcoin,'bitcoin_2y':bitcoin_2y,'ethereum':ethereum,'ethereum_2y':ethereum_2y,
-                         'litecoin':litecoin,'litecoin_2y':litecoin_2y,'ripple':ripple,'ripple_2y':ripple_2y,
-                         'bitcoin_cash':bitcoin_cash,'bitcoin_cash_2y':bitcoin_cash_2y}))
-
-print(data_week_wave)
-
-
-
-
-from qsq import QsCoinMkScraper
-
-scraper = QsCoinMkScraper()
-#scraper.get_all_kline_data()
-scraper.refresh_all_kline_data()
-
-
-"""
+QsTime.signal_day_back_test(myaccount,buy_sig,sell_sig)

@@ -2,7 +2,10 @@
 
 import os
 from os import path
+import logging
 
+#logging.basicConfig(level=logging.WARNING,format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(levelname)s - %(message)s')
 
 # ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊ 数据目录 start ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 root_drive = path.expanduser('~')

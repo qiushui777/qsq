@@ -1,6 +1,7 @@
 # -*- encoding:utf-8 -*-
 
 import pandas as pd
+import numpy as np
 
 class QsAccount(object):
     """
@@ -9,12 +10,26 @@ class QsAccount(object):
     def __init__(self):
         self.balance = 1000000.00 #初始资金
         self.commission = 0.0005 #交易佣金
+        self.trade = True #账户资金1000美金以下停止交易
         self.stop_loss = True #开启止损模式
+        self.stop_loss_price = {} #止损价格，后期准备一个帐户多个币种，设置为字典
         self.stop_loss_num = 0 #止损次数
         self.stop_loss_range = 0.05 #止损幅度
 
         self.order_df = pd.DataFrame(columns = ['date','time','mode','symbol','amount','price','commission_fee']) #交易记录
         self.security_df = pd.DataFrame(columns = ['symbol','amount']) #各币种持仓量
+
+    def symbol_amount(self,symbol):
+        """
+        返回某个币种的持有数量
+        """
+        self.security_df.index = self.security_df['symbol']
+        if symbol not in self.security_df.index:
+            # 未持有过该币种或者该币种已经清空
+            return 0
+        amount = self.security_df.loc[symbol,'amount']
+        self.security_df=self.security_df.reset_index(level=None, drop=True ,col_level=0, col_fill='')  
+        return amount
 
     def Order(self,date=None,time=None,mode=None,symbol=None,amount=None,price=None):
         """
@@ -28,6 +43,10 @@ class QsAccount(object):
         """
         # 先添加下单流水
         ln = len(self.order_df)
+        if symbol not in self.stop_loss_price.keys():
+            self.stop_loss_price[symbol] = price*(1-self.stop_loss_range)
+        if price*(1-self.stop_loss_range) > self.stop_loss_price[symbol]:
+            self.stop_loss_price[symbol] = price*(1-self.stop_loss_range)
         df_new = pd.DataFrame({'date':date, 'time':time, 'mode':mode, 'symbol':symbol, 'amount':amount, 
                                 'price':price, 'commission_fee':amount*price*self.commission}, index = [ln])
         self.order_df = self.order_df.append(df_new, ignore_index=True)
@@ -45,6 +64,8 @@ class QsAccount(object):
                 self.security_df.index = self.security_df['symbol']
                 self.security_df.loc[symbol,'amount'] = self.security_df.loc[symbol,'amount'] + amount
                 self.security_df=self.security_df.reset_index(level=None, drop=True ,col_level=0, col_fill='')  
+            if self.balance < 1000:
+                self.trade = False
         
         ln = len(self.security_df[self.security_df.symbol==symbol])
         # 卖出
@@ -58,8 +79,9 @@ class QsAccount(object):
             self.security_df.loc[symbol, 'amount'] -= amount
             if self.security_df.loc[symbol, 'amount'] == 0:
                 self.security_df = self.security_df.drop(symbol, axis=0)
-            self.security_df = self.security_df.reset_index(level=None, drop=True, col_level=0, col_fill='')            
-
+            self.security_df = self.security_df.reset_index(level=None, drop=True, col_level=0, col_fill='')  
+            if self.balance > 1000:
+                self.trade = True          
 
         if mode == 2 and ln == 0:
             raise Exception("[qiushui log]: Selling a non-exist Coin")
