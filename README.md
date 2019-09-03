@@ -11,6 +11,23 @@
 qs_papers中包含如何使用本库的一些教程
 
 
-
 # 感谢以下资料提供的帮助
 abupy(https://github.com/bbfamily/abu) 
+
+# 欢迎交流
+邮箱：xudong_shao#hotmail.com
+qq群：742593185
+
+### License
+[GPL](./LICENSE)
+<<<<<<< HEAD
+# 感谢以下资料提供的帮助
+abupy(https://github.com/bbfamily/abu) 
+=======
+# 欢迎交流
+邮箱：xudong_shao#hotmail.com
+qq群：742593185
+
+### License
+[GPL](./LICENSE)
+>>>>>>> dev
