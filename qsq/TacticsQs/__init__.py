@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
-from . import QsTime
+from . import QsPickSignal
 
 __all__ = [
-    'QsTime'
+    'QsPickSignal'
 ]

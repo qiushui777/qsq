@@ -9,6 +9,7 @@ class QsAccount(object):
     """
     def __init__(self):
         self.balance = 1000000.00 #初始资金
+        self.asset = pd.DataFrame(columns = ['asset']) #总资产，包括各个币种在内，使用当日价格来计算
         self.commission = 0.0005 #交易佣金
         self.trade = True #账户资金1000美金以下停止交易
         self.stop_loss = True #开启止损模式
@@ -45,7 +46,7 @@ class QsAccount(object):
         ln = len(self.order_df)
         if symbol not in self.stop_loss_price.keys():
             self.stop_loss_price[symbol] = price*(1-self.stop_loss_range)
-        if price*(1-self.stop_loss_range) > self.stop_loss_price[symbol]:
+        if mode == 1 and price*(1-self.stop_loss_range) > self.stop_loss_price[symbol]:
             self.stop_loss_price[symbol] = price*(1-self.stop_loss_range)
         df_new = pd.DataFrame({'date':date, 'time':time, 'mode':mode, 'symbol':symbol, 'amount':amount, 
                                 'price':price, 'commission_fee':amount*price*self.commission}, index = [ln])
@@ -81,7 +82,9 @@ class QsAccount(object):
                 self.security_df = self.security_df.drop(symbol, axis=0)
             self.security_df = self.security_df.reset_index(level=None, drop=True, col_level=0, col_fill='')  
             if self.balance > 1000:
-                self.trade = True          
+                self.trade = True
+            # 全部卖出后，止损价必须清零，否则后面会一直卖出
+            self.stop_loss_price[symbol] = 0          
 
         if mode == 2 and ln == 0:
             raise Exception("[qiushui log]: Selling a non-exist Coin")

@@ -1,5 +1,5 @@
 import numpy as np
-from qsq import QsData, QsCrypto, QsAccount, QsSignal, QsTime
+from qsq import QsData, QsCrypto, QsAccount, QsSignal, QsPickSignal, QsDrawUtil
 
 data = QsData()
 bitcoin = QsCrypto('bitcoin', data.get_coin_df(coin='bitcoin'))
@@ -30,7 +30,6 @@ sell_sig = sellsignal(bitcoin)
 
 
 myaccount = QsAccount()
-QsTime.signal_day_back_test(myaccount,buy_sig,sell_sig)
+QsPickSignal.signal_day_back_test(myaccount,buy_sig,sell_sig)
 
-
-###
+QsDrawUtil.plot_dfs({'bitcoin':bitcoin.crypto_df.close, 'asset':myaccount.asset.asset})
