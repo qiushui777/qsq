@@ -20,4 +20,3 @@ qq群：742593185
 
 ### License
 [GPL](./LICENSE)
-
