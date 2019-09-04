@@ -31,3 +31,6 @@ sell_sig = sellsignal(bitcoin)
 
 myaccount = QsAccount()
 QsTime.signal_day_back_test(myaccount,buy_sig,sell_sig)
+
+
+###
