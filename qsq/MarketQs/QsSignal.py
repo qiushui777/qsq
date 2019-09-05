@@ -14,5 +14,6 @@ class QsSignal(object):
         mode: 买卖方向, 0 -> 不操作， 1 -> 买， 2 -> 卖
         symbol: 买卖对象
         percent: 买卖比例 
+        money: 买卖金额
         """
-        return {'mode':0, 'symbol':self.crypto.symbol,'percent':1}
+        return {'mode':0, 'symbol':self.crypto.symbol,'percent':1, 'money':0}

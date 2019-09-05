@@ -1,6 +1,6 @@
 import logging
 
-def signal_day_back_test(account=None ,buysignal=None, sellsignal=None):
+def signal_backtest_percent(account=None ,buysignal=None, sellsignal=None):
     """
     择时策略日线回测
     param: account 帐户
