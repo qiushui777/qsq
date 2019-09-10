@@ -25,6 +25,25 @@ import pandas as pd
 
 log_func = print
 
+from ..ExtQs.empyrical import stats
+
+APPROX_BDAYS_PER_MONTH = 21
+APPROX_BDAYS_PER_YEAR = 252
+
+MONTHS_PER_YEAR = 12
+WEEKS_PER_YEAR = 52
+
+DAILY = 'daily'
+WEEKLY = 'weekly'
+MONTHLY = 'monthly'
+YEARLY = 'yearly'
+
+ANNUALIZATION_FACTORS = {
+    DAILY: APPROX_BDAYS_PER_YEAR,
+    WEEKLY: WEEKS_PER_YEAR,
+    MONTHLY: MONTHS_PER_YEAR,
+    YEARLY: 1
+}
 
 def _df_dispatch(df, dispatch_func):
     """
@@ -290,3 +309,47 @@ def date_week_wave(df):
         return dww
 
     return _df_dispatch_concat(df, _date_week_wave)
+
+
+def volatility(returns, period=DAILY,alpha=2.0, annualization=None):
+    """
+    返回波动率，调用empyrical接口
+    :param returns: 每日收益的DataFrame 
+    """
+    return stats.annual_volatility(returns, period=period,alpha=alpha, annualization=annualization)
+
+
+def sharpe_ratio(returns, risk_free=0, period=DAILY, annualization=None):
+    """
+    夏普比率，调用empyrical接口
+    :param returns: 每日收益的DataFrame 
+    """
+    return stats.sharpe_ratio(returns, risk_free=risk_free, period=period, annualization=annualization)
+
+def information_ratio(returns, factor_returns):
+    """
+    信息比率，调用empyrical接口
+    :param returns: 每日收益的DataFrame 
+    """
+    return stats.information_ratio(returns, factor_returns)
+
+def alpha_beta(returns, factor_returns, risk_free=0.0, period=DAILY, annualization=None):
+    """
+    计算阿尔法和贝塔，调用empyrical接口
+    :param returns: 每日收益的DataFrame 
+    """
+    return stats.alpha_beta_aligned(returns=returns, factor_returns=factor_returns, risk_free=risk_free, 
+                        period=period, annualization=annualization)
+
+def max_drawdown(returns):
+    """
+    计算最大回撤，调用empyrical接口
+    :param returns: 每日收益的DataFrame 
+    """
+    return stats.max_drawdown(returns)
+
+def win_rate(account):
+    """
+    计算胜率，回测完后直接传入QsAccount即可
+    """
+    return account.win / len(account.order_df[account.order_df['mode'] == 1])

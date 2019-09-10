@@ -1,12 +1,14 @@
 import numpy as np
+import pandas as pd
 from datetime import timedelta
-from qsq import QsData, QsCrypto, QsAccount, QsSignal, QsPickSignal, QsDrawUtil
+from qsq import QsData, QsCrypto, QsAccount, QsSignal, QsPickSignal, QsDrawUtil, QsStat, QsScaleUtil, QsScore
 
 data = QsData()
 bitcoin = QsCrypto('bitcoin', data.get_coin_df(coin='bitcoin')[-90:])
+
+
 bitcoin.add_window_mean(3)
 bitcoin.add_window_mean(5)
-
 
 class buysignal(QsSignal):
     def produce_signal(self,param):
@@ -37,4 +39,7 @@ sell_sig = sellsignal(bitcoin)
 myaccount = QsAccount()
 QsPickSignal.signal_backtest_percent(myaccount,buy_sig,sell_sig)
 
-QsDrawUtil.plot_dfs({'bitcoin':bitcoin.crypto_df.close, 'asset':myaccount.asset.asset})
+myaccount.cal_returns()
+print(myaccount.asset)
+
+#QsDrawUtil.plot_dfs({'bitcoin':bitcoin.crypto_df.close, 'asset':myaccount.asset.asset})

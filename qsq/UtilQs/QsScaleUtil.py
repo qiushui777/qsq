@@ -21,3 +21,9 @@ def scale_dfs(df_list, type_look='look_max', mean_how=False):
         min_v = min(group_min)
         scale_factor = [ min_v / single_min for single_min in group_min]
     return(scale_factor)
+
+def min_max_scaler(df):
+    """
+    将datafram按每列最大最小值进行归一化
+    """
+    return (df - df.min()) / (df.max() - df.min())
