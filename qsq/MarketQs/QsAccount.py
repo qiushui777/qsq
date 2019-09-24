@@ -11,11 +11,14 @@ class QsAccount(object):
         self.balance = 1000000.00 #初始资金
         self.asset = pd.DataFrame(columns = ['asset']) #总资产，包括各个币种在内，使用当日价格来计算
         self.commission = 0.0005 #交易佣金
+        self.lastbuy_price = 0 #上次购买的价格
+        self.win = 0 #胜利次数，简单认为卖出价格大于上次买入价即为成功
         self.trade = True #账户资金1000美金以下停止交易
         self.stop_loss = True #开启止损模式
         self.stop_loss_price = {} #止损价格，后期准备一个帐户多个币种，设置为字典
         self.stop_loss_num = 0 #止损次数
         self.stop_loss_range = 0.05 #止损幅度
+        self.benchmark = None #市场基准，这里应设为对应时间内的比特币
 
         self.order_df = pd.DataFrame(columns = ['date','time','mode','symbol','amount','price','commission_fee']) #交易记录
         self.security_df = pd.DataFrame(columns = ['symbol','amount']) #各币种持仓量
@@ -67,6 +70,8 @@ class QsAccount(object):
                 self.security_df=self.security_df.reset_index(level=None, drop=True ,col_level=0, col_fill='')  
             if self.balance < 1000:
                 self.trade = False
+            self.lastbuy_price = price
+            return
         
         ln = len(self.security_df[self.security_df.symbol==symbol])
         # 卖出
@@ -84,7 +89,18 @@ class QsAccount(object):
             if self.balance > 1000:
                 self.trade = True
             # 全部卖出后，止损价必须清零，否则后面会一直卖出
-            self.stop_loss_price[symbol] = 0          
+            self.stop_loss_price[symbol] = 0      
+            if price > self.lastbuy_price:
+                self.win += 1
+            return    
 
         if mode == 2 and ln == 0:
             raise Exception("[qiushui log]: Selling a non-exist Coin")
+
+    def cal_returns(self):
+        self.asset['p_change'] = np.NaN
+        last_idx = self.asset.index[0]
+        for idx in self.asset.index[1:]:
+            self.asset.loc[idx]['p_change'] = (self.asset.loc[idx]['asset'] - self.asset.loc[last_idx]['asset']) / \
+                                                    self.asset.loc[last_idx]['asset']
+            last_idx = idx

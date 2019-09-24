@@ -1,6 +1,6 @@
 import logging
 
-def signal_day_back_test(account=None ,buysignal=None, sellsignal=None):
+def signal_backtest_percent(account=None ,buysignal=None, sellsignal=None):
     """
     择时策略日线回测
     param: account 帐户
@@ -20,7 +20,7 @@ def signal_day_back_test(account=None ,buysignal=None, sellsignal=None):
             buy_amount = ((account.balance*buy_result['percent'])/(buy_price*(1+account.commission)))
             account.Order(date=date_str,time='19:00',mode=1,symbol=buy_result['symbol'],amount=buy_amount,
                         price=buy_price)
-            logging.info(date_str + " buy " + buy_result['symbol'] + ' ' + str(buy_amount))
+            logging.info(date_str + " buy " + buy_result['symbol'] + ' ' + str(buy_amount) + ' price: ' + str(buy_price))
             logging.info("The asset is " + str(account.balance + account.symbol_amount(buy_result['symbol'])*buy_price))
 
         # 判断卖点
@@ -30,7 +30,8 @@ def signal_day_back_test(account=None ,buysignal=None, sellsignal=None):
             sell_amount = account.symbol_amount(sell_result['symbol'])*sell_result['percent']
             account.Order(date=date_str,time='19:00',mode=2,symbol=sell_result['symbol'],amount=sell_amount,
                         price=sell_price)
-            logging.info(date_str + " sell " + sell_result['symbol'] + ' ' + str(sell_amount))
+            logging.info(date_str + " sell " + sell_result['symbol'] + ' ' + str(sell_amount) +  ' price: ' 
+                                    + str(sell_price))
             logging.info("The asset is " + str(account.balance + account.symbol_amount(sell_result['symbol'])*sell_price))
 
         # 判断是否止损
