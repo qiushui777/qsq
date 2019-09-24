@@ -18,6 +18,7 @@ class QsAccount(object):
         self.stop_loss_price = {} #止损价格，后期准备一个帐户多个币种，设置为字典
         self.stop_loss_num = 0 #止损次数
         self.stop_loss_range = 0.05 #止损幅度
+        self.benchmark = None #市场基准，这里应设为对应时间内的比特币
 
         self.order_df = pd.DataFrame(columns = ['date','time','mode','symbol','amount','price','commission_fee']) #交易记录
         self.security_df = pd.DataFrame(columns = ['symbol','amount']) #各币种持仓量

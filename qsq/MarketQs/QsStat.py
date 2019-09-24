@@ -330,6 +330,7 @@ def information_ratio(returns, factor_returns):
     """
     信息比率，调用empyrical接口
     :param returns: 每日收益的DataFrame 
+    :param factor_returns: 基准收益的DataFrame 
     """
     return stats.information_ratio(returns, factor_returns)
 
