@@ -42,7 +42,14 @@ class QsCrypto(object):
         """
         增加n天对数收益差
         """
-
         for i in range(n, len(self.crypto_df)):
             self.crypto_df.ix[i,str(n)+'day_logreturn'] = np.log(self.crypto_df.ix[i,'close']) - \
                                                                     np.log(self.crypto_df.ix[i-n,'close'])
+
+    def add_high_low_log(self):
+        """
+        增加当日的对数高低价差值
+        """
+        for i in range(0, len(self.crypto_df)):
+            self.crypto_df.ix[i,'high_low_log'] = np.log(self.crypto_df.ix[i,'high']) - \
+                                                                    np.log(self.crypto_df.ix[i,'low'])
