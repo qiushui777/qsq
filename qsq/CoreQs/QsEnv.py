@@ -5,7 +5,7 @@ from os import path
 import logging
 
 #logging.basicConfig(level=logging.WARNING,format='%(asctime)s - %(levelname)s - %(message)s')
-logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(levelname)s - %(message)s')
+#logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(levelname)s - %(message)s')
 
 # ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊ 数据目录 start ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 root_drive = path.expanduser('~')
@@ -17,8 +17,10 @@ g_project_data_dir = path.join(g_project_root, 'data')
 g_project_log_dir = path.join(g_project_root, 'log')
 """qsq数据库文件夹 ~/qsq/db"""
 g_project_db_dir = path.join(g_project_root, 'db')
-"""qsq缓存文件夹 ~/qsq/cache"""
+"""qsq缓存文件夹 ~/qsq/data/cache"""
 g_project_cache_dir = path.join(g_project_data_dir, 'cache')
+"""qsq用户配置文件夹 ~/qsq/config"""
+g_project_config = path.join(g_project_root,'config/config.ini')
 
 def make_env_dir(file_path):
     folder = os.path.exists(file_path)
