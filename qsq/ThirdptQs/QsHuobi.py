@@ -1,6 +1,7 @@
 from ..CoreQs import QsEnv
 
 from huobi import RequestClient, SubscriptionClient
+from huobi.base.printobject import PrintMix
 from huobi.model import *
 from configparser import ConfigParser
 
@@ -11,7 +12,7 @@ class QsHuobi(object):
     """
     def __init__(self):
         [self.api_key, self.secret_key] = self.get_apikey()
-        self.request_client = RequestClient()
+        self.request_client = RequestClient(api_key=self.api_key, secret_key=self.secret_key)
         #self.subscription_client = SubscriptionClient()
 
     def get_apikey(self): 
@@ -42,3 +43,36 @@ class QsHuobi(object):
         """
         candlestick_list = self.request_client.get_latest_candlestick(pair, interval, size)
         return candlestick_list
+
+    def get_exchange_currencies(self):
+        """
+        获取火币所有交易币种
+        """
+        return self.request_client.get_exchange_currencies()
+
+    def get_exchange_info(self):
+        """
+        获取交易所信息，返回交易对和支持币种，使用案例
+        for symbol in exchange_info.symbol_list:
+            print(symbol.symbol)
+    
+        for currency in exchange_info.currencies:
+            print(currency)
+        """
+        return self.request_client.get_exchange_info()
+
+    def get_fee_rate(self, symbol="btcusdt"):
+        """
+        获取交易手续费，返回一个FeeRate对象，成员包括
+        symbol 对应币种 maker_fee 卖方手续费 taker_fee 买方手续费
+        实际使用中，symbol也为一个费率
+        """
+        result = self.request_client.get_fee_rate(symbols=symbol)
+        return result[0]
+
+    def get_historical_orders(self, symbol="eosht", order_state=OrderState.CANCELED, order_type=None, start_date=None, end_date=None, start_id=None, size=None):
+        """
+        获取历史订单,参数如下
+        
+        """
+        orders = self.request_client.get_historical_orders(symbol=symbol, order_state=order_state, order_type=order_type, start_date=start_date, end_date=end_date, start_id=start_id, size=size)
