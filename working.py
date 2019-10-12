@@ -8,5 +8,4 @@ scrapper.refresh_all_kline_data()
 from qsq import QsHuobi
 
 qshuobi = QsHuobi()
-data = qshuobi.get_fee_rate()
-print(data.maker)
+data = qshuobi.get_market_trade()

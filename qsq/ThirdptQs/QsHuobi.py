@@ -70,9 +70,34 @@ class QsHuobi(object):
         result = self.request_client.get_fee_rate(symbols=symbol)
         return result[0]
 
-    def get_historical_orders(self, symbol="eosht", order_state=OrderState.CANCELED, order_type=None, start_date=None, end_date=None, start_id=None, size=None):
+    def get_historical_orders(self, symbol="ethusdt", order_state=OrderState.CANCELED, order_type=None, start_date=None, end_date=None, start_id=None, size=None):
         """
-        获取历史订单,参数如下
+        param: symbol 符号(必须)
+        param: order_state 订单状态(必须)，可选参数有SUBMITTED PARTIAL_FILLED CANCELLING PARTIAL_CANCELED FILLED CANCELED INVALID
+        param: order_type 订单类型(可选)，可选参数有SELL_LIMIT BUY_LIMIT BUY_MARKET SELL_MARKET BUY_IOC SELL_IOC BUY_LIMIT_MAKER SELL_LIMIT_MAKER BUY_STOP_LIMIT SELL_STOP_LIMIT INVALID 
+        param: start_date 开始日期(可选) 格式为 yyyy-mm-dd
+        param: end_date 结束日期(可选) 格式为 yyyy-mm-dd
+        param: start_id(可选) 订单起始id，暂时忽略
+        param: size(可选) 大小，暂时忽略
         
+        获取历史订单
         """
         orders = self.request_client.get_historical_orders(symbol=symbol, order_state=order_state, order_type=order_type, start_date=start_date, end_date=end_date, start_id=start_id, size=size)
+        return orders
+
+    def get_historical_trade(self, symbol="btcusdt", size=5):
+        """
+        param: symbol 符号(必须)
+        param: size 交易列表的大小(必须)
+        获取历史交易数据，返回trade_list对象列表，每个对象有如下几个成员
+        timestamp trade_id price amount direction
+        """
+        trade_list = self.request_client.get_historical_trade(symbol,size)
+        return trade_list
+
+    def get_market_trade(self,symbol="btcusdt"):
+        trades = self.request_client.get_market_trade(symbol=symbol)
+        if(len(trades)):
+            for trade in trades:
+                print(trade)
+                trade.print_object()
