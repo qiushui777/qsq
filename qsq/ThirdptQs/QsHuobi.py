@@ -11,14 +11,14 @@ class QsHuobi(object):
     要想进行交易，必须在qs/config/config.ini中设置好自己的火币api密钥
     """
     def __init__(self):
-        [self.api_key, self.secret_key] = self.get_apikey()
+        [self.api_key, self.secret_key, self.client_order_id] = self.get_apikey()
         self.request_client = RequestClient(api_key=self.api_key, secret_key=self.secret_key)
         #self.subscription_client = SubscriptionClient()
 
     def get_apikey(self): 
         cfg = ConfigParser()
         cfg.read(QsEnv.g_project_config)
-        return [cfg.get('huobi','huobiapi_key'),cfg.get('huobi','huobisecret_key')]
+        return [cfg.get('huobi','huobiapi_key'),cfg.get('huobi','huobisecret_key'),cfg.get('huobi','client_order_id')]
 
     def get_24h_trade_statistics(self, pair="btcusdt"):
         """
@@ -96,8 +96,81 @@ class QsHuobi(object):
         return trade_list
 
     def get_market_trade(self,symbol="btcusdt"):
+        """
+        param: symbol 符号，默认为btcusdt
+        获取当前市场上的交易，返回一个trade对象组成的tradelist列表，每个trade对象的成员有
+        price, amount, trade_id timestamp, direction
+        """
         trades = self.request_client.get_market_trade(symbol=symbol)
-        if(len(trades)):
-            for trade in trades:
-                print(trade)
-                trade.print_object()
+        return trades
+
+    def get_open_orders(self,symbol="htusdt", account_type=AccountType.SPOT, direct="next"):
+        """
+        获取自己账户当前开放的交易,返回order数组，每个Order对象有
+        order_id, symbol, price, amount, account_type, created_timestamp, order_type, filled_amount, filled_cash_amount, filled_fees, source, state
+        """
+        orders = self.request_client.get_open_orders(symbol=symbol, account_type=account_type, direct=direct)
+        return orders
+
+    def get_order_recent_48hour(self,symbol=None, start_time=None, end_time=None, size=None, direct=None):
+        """
+        获取自己账户48小时内的交易记录，返回order数组
+        """
+        orders = self.request_client.get_order_recent_48hour(symbol=symbol, start_time=start_time, end_time=end_time, size=size, direct=direct)
+        return orders
+
+    def get_price_depth(self,symbol,size):
+        """
+        获取当前市场的交易深度，symbol 为交易对，size为头部的几个交易，一个用例如下
+        i = 0
+        for entry in depth.bids:
+            i = i + 1
+            print(str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
+
+        i = 0
+        for entry in depth.asks:
+            i = i + 1
+            print(str(i) + ": price: " + str(entry.price) + ", amount: " + str(entry.amount))
+        """
+        depth = self.request_client.get_price_depth(symbol, size)
+        return depth
+
+    def order(self, symbol="btcusdt", account_type=AccountType.SPOT, order_type=OrderType.SELL_LIMIT, amount=1.0, price=None, stop_price=None, operator=None):
+        """
+        下单函数，谨慎使用
+        必须提供的参数为symbol,account_type,order_type,amount
+        param: account_type  账户类型，包括有SPOT MARGIN OTC POINT 
+        param: order_type 订单类型，包括有SELL_LIMIT BUY_LIMIT BUY_MARKET SELL_MARKET BUY_IOC SELL_IOC
+        """
+        order_id = self.request_client.create_order(symbol, account_type, order_type, amount, price, self.client_order_id, stop_price, operator)
+        return order_id
+
+    def cancle_order(self, symbol="btcusdt", order_id="00000"):
+        """
+        取消某笔订单
+        """
+        cancle_state = self.request_client.cancel_order(symbol, order_id)
+        return cancle_state
+
+    def get_order(self, symbol="btcusdt", order_id="000000"):
+        """
+        根据order_id获取某笔交易,每个Order对象有
+        order_id, symbol, price, amount, account_type, created_timestamp, order_type, filled_amount, filled_cash_amount, filled_fees, source, state
+        """
+        order = self.request_client.get_order(symbol=symbol, order_id=order_id)
+        return order
+
+    def get_order_by_client_order_id(self):
+        """
+        根据client_order_id来获取订单, 每个Order对象有
+        order_id, symbol, price, amount, account_type, created_timestamp, order_type, filled_amount, filled_cash_amount, filled_fees, source, state
+        """
+        order = self.request_client.get_order_by_client_order_id(client_order_id=self.client_order_id)
+        return order
+
+    def cancel_client_order(self):
+        """
+        根据client_order_id取消某笔交易
+        """
+        self.request_client.cancel_client_order(client_order_id=self.client_order_id)
+
