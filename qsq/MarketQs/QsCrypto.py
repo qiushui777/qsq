@@ -3,11 +3,13 @@
 import numpy as np
 import pandas as pd
 
+from .QsData import QsData
+
 class QsCrypto(object):
     """操作加密货币数据类"""
-    def __init__(self, symbol, df):
+    def __init__(self, symbol):
         self.symbol = symbol
-        self.crypto_df = df
+        self.crypto_df = QsData().get_coin_df(coin=symbol)
 
     def add_period_max(self, period):
         """
@@ -35,3 +37,19 @@ class QsCrypto(object):
         param: window int值，时间区段的长度
         """
         self.crypto_df[str(window)+'_window_mean'] = np.round(self.crypto_df.close.rolling(window=window).mean(),2)
+
+    def add_nday_logreturn(self, n):
+        """
+        增加n天对数收益差
+        """
+        for i in range(n, len(self.crypto_df)):
+            self.crypto_df.ix[i,str(n)+'day_logreturn'] = np.log(self.crypto_df.ix[i,'close']) - \
+                                                                    np.log(self.crypto_df.ix[i-n,'close'])
+
+    def add_high_low_log(self):
+        """
+        增加当日的对数高低价差值
+        """
+        for i in range(0, len(self.crypto_df)):
+            self.crypto_df.ix[i,'high_low_log'] = np.log(self.crypto_df.ix[i,'high']) - \
+                                                                    np.log(self.crypto_df.ix[i,'low'])

@@ -62,8 +62,9 @@ class QsCoinMkScraper(object):
         file_list = os.listdir(QsEnv.g_project_cache_dir)
         found = False 
         target_file = ""
+        save_coinname = "qs" + refresh_cointype
         for filename in file_list:
-            if refresh_cointype in filename:
+            if save_coinname == filename.split("_")[0]:
                 target_file = os.path.join(QsEnv.g_project_cache_dir,filename)
                 found = True
                 break
